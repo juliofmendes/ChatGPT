@@ -76,3 +76,29 @@ image_urls = response_data["data"]
 print("Possíveis imagens geradas:")
 for i, image_url in enumerate(image_urls):
     print(f"{i+1}. {image_url}")
+
+# Gerar título e copy para Instagram, texto de legenda e hashtags
+title_prompt = f"{communication_suggestions[communication_choice-1]} sobre {prompt}"
+copy_prompt = (
+    f"{communication_suggestions[communication_choice-1]} sobre {prompt} com um tom {writing_tone_suggestions[writing_tone_choice-1].lower()} "
+    f"é perfeito para o público {audience_suggestions[audience_choice-1].lower()}."
+)
+response = openai.Completion.create(engine=model_engine, prompt=title_prompt, max_tokens=60, n=1, stop=None, temperature=0.5)
+title = response.choices[0].text.strip()
+
+response = openai.Completion.create(engine=model_engine, prompt=copy_prompt, max_tokens=128, n=1, stop=None, temperature=0.5)
+copy = response.choices[0].text.strip()
+
+caption = f"{prompt}: {title}\n\n{copy}"
+
+hashtags = ["#"+prompt.replace(" ", ""), "#"+communication_suggestions[communication_choice-1].replace(" ", ""), "#"+writing_tone_suggestions[writing_tone_choice-1].replace(" ", ""), "#"+audience_suggestions[audience_choice-1].replace(" ", "")]
+
+print("Título do post no Instagram:")
+print(title)
+print("\nCopy para o post no Instagram:")
+print(copy)
+print("\nTexto de legenda do post no Instagram:")
+print(caption)
+print("\nHashtags do post no Instagram:")
+print(" ".join(hashtags))
+
